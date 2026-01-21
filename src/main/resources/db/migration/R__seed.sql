@@ -259,7 +259,7 @@ from company c where c.name = '엔라이즈'
 insert into skill (name)
 values
     ('Kotlin'), ('Java'), ('Spring Boot'), ('Node.js'), ('Nest.js'),
-    ('Python'), ('FastAPI'), ('Django'), ('Javascript'), ('React')
+    ('Python'), ('FastAPI'), ('Django'), ('Javascript'), ('React'),
     ('MySQL'), ('PostgreSQL'), ('MongoDB'), ('Redis'), ('Kafka'), ('AWS')
     on conflict do nothing;
 
