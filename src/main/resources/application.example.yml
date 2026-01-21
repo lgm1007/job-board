@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: job-board
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jobboard
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate   # Flyway가 스키마 관리하므로 ddl-auto로 스키마 제어 X
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
