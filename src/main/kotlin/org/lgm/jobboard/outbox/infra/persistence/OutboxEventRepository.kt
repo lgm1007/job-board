@@ -1,7 +1,7 @@
 package org.lgm.jobboard.outbox.infra.persistence
 
 import jakarta.persistence.LockModeType
-import org.lgm.jobboard.outbox.domain.OutboxStatus
+import org.lgm.jobboard.outbox.domain.type.OutboxStatus
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock

@@ -3,8 +3,8 @@ package org.lgm.jobboard.jobposting.infra.persistence
 import jakarta.persistence.*
 import org.lgm.jobboard.common.jpa.BaseEntity
 import org.lgm.jobboard.company.infra.persistence.CompanyEntity
-import org.lgm.jobboard.jobposting.domain.EmploymentType
-import org.lgm.jobboard.jobposting.domain.JobPostingStatus
+import org.lgm.jobboard.jobposting.domain.type.EmploymentType
+import org.lgm.jobboard.jobposting.domain.type.JobPostingStatus
 
 @Entity
 @Table(

@@ -1,7 +1,7 @@
 package org.lgm.jobboard.jobposting.domain.model
 
-import org.lgm.jobboard.jobposting.domain.EmploymentType
-import org.lgm.jobboard.jobposting.domain.JobPostingStatus
+import org.lgm.jobboard.jobposting.domain.type.EmploymentType
+import org.lgm.jobboard.jobposting.domain.type.JobPostingStatus
 
 class JobPosting private constructor(
 	val id: Long?,

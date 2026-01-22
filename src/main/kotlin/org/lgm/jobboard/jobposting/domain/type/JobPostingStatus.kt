@@ -1,4 +1,4 @@
-package org.lgm.jobboard.jobposting.domain
+package org.lgm.jobboard.jobposting.domain.type
 
 enum class JobPostingStatus(val description: String) {
 	OPEN("채용 중"),

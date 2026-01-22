@@ -1,6 +1,6 @@
 package org.lgm.jobboard.jobposting.application.dto
 
-import org.lgm.jobboard.jobposting.domain.EmploymentType
+import org.lgm.jobboard.jobposting.domain.type.EmploymentType
 
 data class CreatedJobPostingCommand(
 	val companyId: Long,
