@@ -1,4 +1,4 @@
-package org.lgm.jobboard.outbox.domain
+package org.lgm.jobboard.outbox.domain.type
 
 enum class OutboxStatus(val description: String) {
 	PENDING("대기중"),

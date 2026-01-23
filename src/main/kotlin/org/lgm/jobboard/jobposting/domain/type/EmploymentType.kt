@@ -1,4 +1,4 @@
-package org.lgm.jobboard.jobposting.domain
+package org.lgm.jobboard.jobposting.domain.type
 
 enum class EmploymentType(val description: String) {
 	FULL_TIME("정규직"),

@@ -2,9 +2,9 @@ package org.lgm.jobboard.outbox.infra.persistence
 
 import jakarta.persistence.*
 import org.lgm.jobboard.common.jpa.BaseEntity
-import org.lgm.jobboard.outbox.domain.AggregateType
-import org.lgm.jobboard.outbox.domain.EventType
-import org.lgm.jobboard.outbox.domain.OutboxStatus
+import org.lgm.jobboard.outbox.domain.type.AggregateType
+import org.lgm.jobboard.outbox.domain.type.EventType
+import org.lgm.jobboard.outbox.domain.type.OutboxStatus
 import java.time.OffsetDateTime
 
 @Entity
