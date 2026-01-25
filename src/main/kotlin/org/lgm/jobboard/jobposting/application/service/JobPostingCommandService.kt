@@ -1,7 +1,7 @@
 package org.lgm.jobboard.jobposting.application.service
 
+import org.lgm.jobboard.jobposting.application.dto.CreateJobPostingCommand
 import org.lgm.jobboard.jobposting.application.dto.CreateJobPostingResult
-import org.lgm.jobboard.jobposting.application.dto.CreatedJobPostingCommand
 import org.lgm.jobboard.jobposting.application.port.CompanyQueryPort
 import org.lgm.jobboard.jobposting.application.port.JobPostingCommandPort
 import org.lgm.jobboard.jobposting.application.port.SkillCommandPort
@@ -22,7 +22,7 @@ class JobPostingCommandService(
 	private val outboxCommandPort: OutboxCommandPort
 ) {
 	@Transactional
-	fun create(command: CreatedJobPostingCommand): CreateJobPostingResult {
+	fun create(command: CreateJobPostingCommand): CreateJobPostingResult {
 		// 회사 없으면 에러
 		if (!companyQueryPort.existsById(command.companyId)) {
 			throw IllegalArgumentException("Company not found. companyId=${command.companyId}")
