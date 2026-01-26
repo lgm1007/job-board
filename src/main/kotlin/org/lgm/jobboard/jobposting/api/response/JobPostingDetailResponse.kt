@@ -17,6 +17,13 @@ data class JobPostingDetailResponse(
 	val company: CompanyResponse,
 	val skills: Set<String>
 ) {
+	data class CompanyResponse(
+		val id: Long,
+		val name: String,
+		val website: String?,
+		val industry: String?
+	)
+
 	companion object {
 		fun from(view: JobPostingDetailView): JobPostingDetailResponse =
 			JobPostingDetailResponse(
