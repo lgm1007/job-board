@@ -3,8 +3,15 @@ package org.lgm.jobboard.jobposting.infra.persistence.adapter
 import org.lgm.jobboard.jobposting.application.dto.CompanyView
 import org.lgm.jobboard.jobposting.application.dto.JobPostingDetailView
 import org.lgm.jobboard.jobposting.application.port.JobPostingQueryPort
+import org.lgm.jobboard.jobposting.application.query.CompanySummaryView
+import org.lgm.jobboard.jobposting.application.query.JobPostingListItemView
+import org.lgm.jobboard.jobposting.application.query.JobPostingSearchCondition
+import org.lgm.jobboard.jobposting.infra.persistence.JobPostingEntity
 import org.lgm.jobboard.jobposting.infra.persistence.JobPostingRepository
 import org.lgm.jobboard.jobposting.infra.persistence.JobPostingSkillRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 
 @Component
@@ -39,5 +46,64 @@ class JobPostingQueryAdapter(
 			),
 			skills = skills
 		)
+	}
+
+	override fun search(
+		condition: JobPostingSearchCondition,
+		pageable: Pageable
+	): Page<JobPostingListItemView> {
+		val skill = condition.skill?.trim()?.takeIf { it.isNotBlank() }
+
+		val idPage: Page<Long> =
+			if (skill == null) {
+				jobPostingRepository.searchIds(
+					companyId = condition.companyId,
+					status = condition.status,
+					pageable = pageable
+				)
+			} else {
+				jobPostingSkillRepository.searchIdsBySkill(
+					companyId = condition.companyId,
+					status = condition.status,
+					skill = skill,
+					pageable = pageable
+				)
+			}
+
+		val ids = idPage.content
+		if (ids.isEmpty()) {
+			return PageImpl(emptyList(), pageable, idPage.totalElements)
+		}
+
+		// company fetch join
+		val postings = jobPostingRepository.findAllByIdInWithCompany(ids)
+
+		// id 순서대로 정렬
+		val postingById: Map<Long, JobPostingEntity> = postings.associateBy { it.id!! }
+		val orderedPostings = ids.mapNotNull { postingById[it] }
+
+		// skills 한번에 조회 후 그룹핑
+		val skillRows = jobPostingSkillRepository.findAllByJobPostingIdsWithSkill(ids)
+		val skillsByPostingId: Map<Long, Set<String>> =
+			skillRows.groupBy { it.jobPosting.id!! }
+				.mapValues { (_, rows) -> rows.map { it.skill.name }.toSet() }
+
+		val items = orderedPostings.map { jp ->
+			val company = jp.company
+			JobPostingListItemView(
+				id = jp.id!!,
+				title = jp.title,
+				location = jp.location,
+				status = jp.status.description,
+				createdAt = jp.createdAt,
+				company = CompanySummaryView(
+					id = company.id!!,
+					name = company.name
+				),
+				skills = skillsByPostingId[jp.id!!] ?: emptySet()
+			)
+		}
+
+		return PageImpl(items, pageable, idPage.totalElements)
 	}
 }
