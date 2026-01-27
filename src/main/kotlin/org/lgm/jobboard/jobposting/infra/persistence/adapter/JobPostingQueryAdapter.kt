@@ -1,11 +1,7 @@
 package org.lgm.jobboard.jobposting.infra.persistence.adapter
 
-import org.lgm.jobboard.jobposting.application.dto.CompanyView
-import org.lgm.jobboard.jobposting.application.dto.JobPostingDetailView
 import org.lgm.jobboard.jobposting.application.port.JobPostingQueryPort
-import org.lgm.jobboard.jobposting.application.query.CompanySummaryView
-import org.lgm.jobboard.jobposting.application.query.JobPostingListItemView
-import org.lgm.jobboard.jobposting.application.query.JobPostingSearchCondition
+import org.lgm.jobboard.jobposting.application.query.*
 import org.lgm.jobboard.jobposting.infra.persistence.JobPostingEntity
 import org.lgm.jobboard.jobposting.infra.persistence.JobPostingRepository
 import org.lgm.jobboard.jobposting.infra.persistence.JobPostingSkillRepository

@@ -1,4 +1,4 @@
-package org.lgm.jobboard.jobposting.application.dto
+package org.lgm.jobboard.jobposting.application.query
 
 import java.time.OffsetDateTime
 
