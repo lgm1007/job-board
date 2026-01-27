@@ -1,10 +1,7 @@
 package org.lgm.jobboard.jobposting.application.service
 
-import org.lgm.jobboard.jobposting.application.dto.JobPostingDetailView
 import org.lgm.jobboard.jobposting.application.port.JobPostingQueryPort
-import org.lgm.jobboard.jobposting.application.query.JobPostingListItemView
-import org.lgm.jobboard.jobposting.application.query.JobPostingSearchCondition
-import org.lgm.jobboard.jobposting.application.query.PageView
+import org.lgm.jobboard.jobposting.application.query.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
@@ -20,9 +17,22 @@ class JobPostingQueryService(
 	}
 
 	@Transactional(readOnly = true)
-	fun search(condition: JobPostingSearchCondition, page: Int, size: Int): PageView<JobPostingListItemView> {
+	fun search(
+		condition: JobPostingSearchCondition,
+		page: Int,
+		size: Int,
+		sort: JobPostingSort,
+		dir: SortDirection
+	): PageView<JobPostingListItemView> {
 		val safeSize = size.coerceIn(1, 100)
-		val pageable = PageRequest.of(page.coerceAtLeast(0), safeSize, Sort.by(Sort.Direction.DESC, "createdAt"))
+		val safePage = page.coerceAtLeast(0)
+
+		val direction = if (dir == SortDirection.ASC) Sort.Direction.ASC else Sort.Direction.DESC
+		val pageable = PageRequest.of(
+			safePage,
+			safeSize,
+			Sort.by(direction, sort.property)
+		)
 
 		val resultPage = jobPostingQueryPort.search(condition, pageable)
 		return PageView(

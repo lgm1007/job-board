@@ -1,4 +1,4 @@
-package org.lgm.jobboard.jobposting.application.dto
+package org.lgm.jobboard.jobposting.application.query
 
 data class CompanyView(
 	val companyId: Long,

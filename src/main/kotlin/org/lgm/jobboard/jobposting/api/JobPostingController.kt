@@ -6,6 +6,8 @@ import org.lgm.jobboard.jobposting.api.response.JobPostingDetailResponse
 import org.lgm.jobboard.jobposting.api.response.JobPostingListResponse
 import org.lgm.jobboard.jobposting.application.dto.CreateJobPostingCommand
 import org.lgm.jobboard.jobposting.application.query.JobPostingSearchCondition
+import org.lgm.jobboard.jobposting.application.query.JobPostingSort
+import org.lgm.jobboard.jobposting.application.query.SortDirection
 import org.lgm.jobboard.jobposting.application.service.JobPostingCommandService
 import org.lgm.jobboard.jobposting.application.service.JobPostingQueryService
 import org.lgm.jobboard.jobposting.domain.type.JobPostingStatus
@@ -54,14 +56,19 @@ class JobPostingController(
 		@RequestParam(required = false) skill: String?,
 		@RequestParam(required = false) status: JobPostingStatus?,
 		@RequestParam(defaultValue = "0") page: Int,
-		@RequestParam(defaultValue = "20") size: Int
+		@RequestParam(defaultValue = "20") size: Int,
+		@RequestParam(required = false) sort: String?,
+		@RequestParam(required = false) direction: String?
 	): JobPostingListResponse {
 		val condition = JobPostingSearchCondition(
 			companyId = companyId,
 			skill = skill,
 			status= status
 		)
-		val page = jobPostingQueryService.search(condition, page, size)
+		val sortKey = JobPostingSort.fromParam(sort)
+		val direction = SortDirection.fromParam(direction)
+
+		val page = jobPostingQueryService.search(condition, page, size, sortKey, direction)
 		return JobPostingListResponse.from(page)
 	}
 }

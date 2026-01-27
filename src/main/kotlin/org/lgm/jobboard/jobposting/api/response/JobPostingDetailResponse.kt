@@ -1,6 +1,6 @@
 package org.lgm.jobboard.jobposting.api.response
 
-import org.lgm.jobboard.jobposting.application.dto.JobPostingDetailView
+import org.lgm.jobboard.jobposting.application.query.JobPostingDetailView
 import java.time.OffsetDateTime
 
 data class JobPostingDetailResponse(
