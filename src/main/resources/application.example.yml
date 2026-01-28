@@ -1,3 +1,7 @@
+app:
+  outbox:
+    poll-interval-ms: 1000
+
 spring:
   application:
     name: job-board
