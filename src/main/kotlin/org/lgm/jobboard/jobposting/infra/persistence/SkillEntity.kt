@@ -14,7 +14,7 @@ class SkillEntity(
 	@SequenceGenerator(
 		name = "skill_seq_gen",
 		sequenceName = "public.skill_id_seq",
-		allocationSize = 50
+		allocationSize = 1
 	)
 	@Column(name = "id")
 	var id: Long? = null

@@ -48,7 +48,7 @@ class JobPostingEntity(
 	@SequenceGenerator(
 		name = "job_posting_seq_gen",
 		sequenceName = "public.job_posting_id_seq",
-		allocationSize = 50
+		allocationSize = 1
 	)
 	@Column(name = "id")
 	var id: Long? = null

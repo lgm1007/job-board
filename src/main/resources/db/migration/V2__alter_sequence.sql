@@ -1,0 +1,1 @@
+ALTER SEQUENCE public.outbox_event_id_seq INCREMENT BY 50;

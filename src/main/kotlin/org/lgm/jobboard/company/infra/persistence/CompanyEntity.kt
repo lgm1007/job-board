@@ -20,7 +20,7 @@ class CompanyEntity(
 	@SequenceGenerator(
 		name = "company_seq_gen",
 		sequenceName = "public.company_id_seq",
-		allocationSize = 50
+		allocationSize = 1
 	)
 	@Column(name = "id")
 	var id: Long? = null
