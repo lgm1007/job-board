@@ -1,6 +1,8 @@
 app:
   outbox:
     poll-interval-ms: 1000
+  search:
+    job-posting-index: job_postings
 
 spring:
   application:
