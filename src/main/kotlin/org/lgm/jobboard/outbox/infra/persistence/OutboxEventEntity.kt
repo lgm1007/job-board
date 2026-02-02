@@ -41,7 +41,6 @@ class OutboxEventEntity(
 	@Column(name = "available_at", nullable = false)
 	var availableAt: OffsetDateTime = OffsetDateTime.now(),
 
-	@Lob
 	@Column(name = "last_error")
 	var lastError: String? = null
 ) : BaseEntity() {

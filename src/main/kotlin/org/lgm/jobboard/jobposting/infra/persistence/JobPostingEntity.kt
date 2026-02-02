@@ -22,7 +22,6 @@ class JobPostingEntity(
 	@Column(name = "title", nullable = false, length = 300)
 	var title: String,
 
-	@Lob
 	@Column(name = "description", nullable = false)
 	var description: String,
 
