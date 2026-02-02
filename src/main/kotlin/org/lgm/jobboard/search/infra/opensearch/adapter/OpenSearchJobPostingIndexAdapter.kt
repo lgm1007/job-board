@@ -6,16 +6,16 @@ import org.opensearch.client.opensearch.OpenSearchClient
 import org.opensearch.client.opensearch.core.DeleteRequest
 import org.opensearch.client.opensearch.core.UpdateRequest
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
 class OpenSearchJobPostingIndexAdapter(
-	private val client: OpenSearchClient
+	private val client: OpenSearchClient,
+	@Value("\${app.search.job-posting-index:job_postings}")
+	private val indexName: String   // 운영에선 환경별로 인덱스 prefix 두기
 ) : JobPostingIndexCommandPort {
 	private val log = LoggerFactory.getLogger(javaClass)
-
-	// 실습용 인덱스 이름 (운영에선 환경별 prefix 두기)
-	private val indexName = "job_posting"
 
 	override fun upsert(document: JobPostingIndexDocument) {
 		// 문서는 index 안에 들어가며, 고유 식별자인 _id로 구분
