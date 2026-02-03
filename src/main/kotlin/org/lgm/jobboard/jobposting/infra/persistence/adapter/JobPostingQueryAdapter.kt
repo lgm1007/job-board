@@ -7,6 +7,7 @@ import org.lgm.jobboard.jobposting.infra.persistence.JobPostingRepository
 import org.lgm.jobboard.jobposting.infra.persistence.JobPostingSkillRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 
@@ -53,6 +54,7 @@ class JobPostingQueryAdapter(
 		val idPage: Page<Long> =
 			if (skill == null) {
 				jobPostingRepository.searchIds(
+					q = condition.q,
 					companyId = condition.companyId,
 					status = condition.status,
 					pageable = pageable
@@ -62,7 +64,10 @@ class JobPostingQueryAdapter(
 					companyId = condition.companyId,
 					status = condition.status,
 					skill = skill,
-					pageable = pageable
+					pageable = PageRequest.of(
+						pageable.pageNumber,
+						pageable.pageSize
+					)
 				)
 			}
 
