@@ -43,4 +43,13 @@ interface JobPostingRepository : JpaRepository<JobPostingEntity, Long> {
 		@Param("status") status: JobPostingStatus?,
 		pageable: Pageable
 	): Page<Long>
+
+	@Query(
+		"""
+		select jp.id
+		from JobPostingEntity jp
+		order by jp.id asc
+		"""
+	)
+	fun findAllIds(): List<Long>
 }

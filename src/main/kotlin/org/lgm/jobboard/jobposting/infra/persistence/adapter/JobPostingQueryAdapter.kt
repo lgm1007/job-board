@@ -133,4 +133,8 @@ class JobPostingQueryAdapter(
 			)
 		}
 	}
+
+	override fun findAllIds(): List<Long> {
+		return jobPostingRepository.findAllIds()
+	}
 }
