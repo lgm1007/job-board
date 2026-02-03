@@ -1,7 +1,7 @@
 package org.lgm.jobboard.jobposting.application.query
 
 enum class JobPostingSort(val property: String) {
-	CREATED_AT("created_at"),
+	CREATED_AT("createdAt"),
 	TITLE("title");
 
 	companion object {

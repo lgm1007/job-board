@@ -54,6 +54,7 @@ class JobPostingQueryAdapter(
 		val idPage: Page<Long> =
 			if (skill == null) {
 				jobPostingRepository.searchIds(
+					q = condition.q,
 					companyId = condition.companyId,
 					status = condition.status,
 					pageable = pageable

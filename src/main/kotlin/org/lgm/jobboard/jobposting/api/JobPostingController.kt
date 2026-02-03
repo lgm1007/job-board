@@ -52,6 +52,7 @@ class JobPostingController(
 
 	@GetMapping
 	fun search(
+		@RequestParam(required = false) q: String?,
 		@RequestParam(required = false) companyId: Long?,
 		@RequestParam(required = false) skill: String?,
 		@RequestParam(required = false) status: JobPostingStatus?,
@@ -61,6 +62,7 @@ class JobPostingController(
 		@RequestParam(required = false) direction: String?
 	): JobPostingListResponse {
 		val condition = JobPostingSearchCondition(
+			q = q,
 			companyId = companyId,
 			skill = skill,
 			status= status

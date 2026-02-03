@@ -34,11 +34,13 @@ interface JobPostingRepository : JpaRepository<JobPostingEntity, Long> {
 		"""
 		select jp.id
 		from JobPostingEntity jp
-		where (:companyId is null or jp.company.id = :companyId)
+		where (:q is null or (jp.title like %:q% or jp.description like %:q%))
+			and (:companyId is null or jp.company.id = :companyId)
 			and (:status is null or jp.status = :status)
 		"""
 	)
 	fun searchIds(
+		@Param("q") q: String?,
 		@Param("companyId") companyId: Long?,
 		@Param("status") status: JobPostingStatus?,
 		pageable: Pageable
