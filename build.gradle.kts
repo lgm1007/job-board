@@ -29,6 +29,7 @@ dependencies {
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.flywaydb:flyway-database-postgresql")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	implementation("org.opensearch.client:opensearch-java:2.13.0")
 	implementation("org.opensearch.client:opensearch-rest-client:2.13.0") // transport에서 사용
 	runtimeOnly("org.postgresql:postgresql")

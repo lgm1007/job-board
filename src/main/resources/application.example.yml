@@ -3,6 +3,7 @@ app:
     poll-interval-ms: 1000
   search:
     job-posting-index: job_postings
+    backfill-on-start: true
 
 spring:
   application:

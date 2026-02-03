@@ -9,4 +9,6 @@ import org.springframework.data.domain.Pageable
 interface JobPostingQueryPort {
 	fun findDetailById(jobPostingId: Long): JobPostingDetailView
 	fun search(condition: JobPostingSearchCondition, pageable: Pageable): Page<JobPostingListItemView>
+	fun findListByIdsPreserveOrder(ids: List<Long>): List<JobPostingListItemView>
+	fun findAllIds(): List<Long>
 }
