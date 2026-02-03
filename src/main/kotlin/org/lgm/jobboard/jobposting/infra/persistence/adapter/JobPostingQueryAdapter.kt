@@ -102,4 +102,35 @@ class JobPostingQueryAdapter(
 
 		return PageImpl(items, pageable, idPage.totalElements)
 	}
+
+	override fun findListByIdsPreserveOrder(ids: List<Long>): List<JobPostingListItemView> {
+		// company fetch join
+		val postings = jobPostingRepository.findAllByIdInWithCompany(ids)
+
+		// id 순서대로 정렬
+		val postingById: Map<Long, JobPostingEntity> = postings.associateBy { it.id!! }
+		val orderedPostings = ids.mapNotNull { postingById[it] }
+
+		// skills 한번에 조회 후 그룹핑
+		val skillRows = jobPostingSkillRepository.findAllByJobPostingIdsWithSkill(ids)
+		val skillsByPostingId: Map<Long, Set<String>> =
+			skillRows.groupBy { it.jobPosting.id!! }
+				.mapValues { (_, rows) -> rows.map { it.skill.name }.toSet() }
+
+		return orderedPostings.map { jp ->
+			val company = jp.company
+			JobPostingListItemView(
+				id = jp.id!!,
+				title = jp.title,
+				location = jp.location,
+				status = jp.status.description,
+				createdAt = jp.createdAt,
+				company = CompanySummaryView(
+					id = company.id!!,
+					name = company.name
+				),
+				skills = skillsByPostingId[jp.id!!] ?: emptySet()
+			)
+		}
+	}
 }
