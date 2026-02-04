@@ -9,6 +9,7 @@
 - PostgreSQL
 - Flyway
 - OpenSearch
+- k6
 
 ## 환경설정
 - 로컬 PostgreSQL 및 OpenSearch 도커 컴포즈 설치
@@ -26,6 +27,11 @@ docker-compose up -d
     - resources/db/migration/V2__alter_sequence.sql : PostgreSQL 시퀀스 설정 수정
     - resources/db/migration/R__seed.sql : 샘플 데이터 적재
 
+- k6 성능테스트 실행 환경 설정
+   - [k6 설치 사이트](https://grafana.com/docs/k6/latest/set-up/install-k6/)에서 설치 후 명령어 수행
+   - RDB 목록 조회 기능: `k6 run .\k6\perf\rdb.js`
+   - OpenSearch 검색 기능: `k6 run .\k6\perf\opensearch.js`
+
 ## OpenSearch 실습 포인트
 ### 실습 목표
 - RDB 기반의 채용공고 시스템에 OpenSearch 검색 전용 엔진으로 분리 적용
@@ -36,15 +42,6 @@ docker-compose up -d
 - 인덱스 활용 제한적
 - 관련도 정렬 어려움
 - 데이터가 늘어날수록 성능 급격히 저하
-
-#### RDB 목록 조회 vs OpenSearch 검색 비교
-
-|항목|RDB|OpenSearch|
-|---|---|---|
-|정확 매칭|강함|강함|
-|키워드 검색|제한적|매우 강함|
-|관련도 정렬|어려움|제공|
-|확장성|제한|높음|
 
 ### OpenSearch 인덱스 설계
 #### 인덱스 초기화 (IndexInitializer)
@@ -116,3 +113,229 @@ description
 #### 4. 키워드 (`q`) 없을 때
 - `match_all` + filter
 - 검색이 아닌 필터된 목록 용도
+
+### RDB 목록 조회 vs OpenSearch 검색 비교
+
+|항목|RDB|OpenSearch|
+|---|---|---|
+|정확 매칭|강함|강함|
+|키워드 검색|제한적|매우 강함|
+|관련도 정렬|어려움|제공|
+|확장성|제한|높음|
+|검색 속도|빠름|보통|
+
+#### RDB 조회 vs OpenSearch 검색 성능 비교
+- 1000명의 사용자가 20초동안 요청하는 시나리오
+  - RDB 조회 기능 성능테스트 k6 스크립트: [rdb.js](k6/perf/rdb.js)
+  - OpenSearch 검색 기능 성능테스트 k6 스크립트: [opensearch.js](k6/perf/opensearch.js)
+
+|RDB|OpenSearch|
+|---|---|
+|![](https://i.postimg.cc/NFyp2PV8/seukeulinsyas-2026-02-03-154124.png)|![](https://i.postimg.cc/P5bKDD6R/seukeulinsyas-2026-02-03-154416.png)|
+
+- p95 기준 약 1.76배 RDB 조회 기능이 더 빠름 (477ms vs 847ms)
+
+#### RDB 조회 vs OpenSearch 검색 품질 비교
+- 요청 파라미터: `?q=Java&status=OPEN&page=0&size=20`
+
+##### RDB
+```json
+{
+    "items": [
+        {
+            "id": 20,
+            "title": "[아정당] 플랫폼 백엔드 개발자 (3년 이상~5년 이하)",
+            "location": "Seoul",
+            "status": "채용 중",
+            "createdAt": "2026-01-21T03:54:57.145811Z",
+            "company": {
+                "id": 20,
+                "name": "아정네트웍스"
+            },
+            "skills": [
+                "Kotlin",
+                "Java",
+                "Spring Boot",
+                "AWS"
+            ]
+        },
+        {
+            "id": 22,
+            "title": "백엔드 엔지니어",
+            "location": "Seoul",
+            "status": "채용 중",
+            "createdAt": "2026-01-21T03:54:57.145811Z",
+            "company": {
+                "id": 22,
+                "name": "세컨신드롬"
+            },
+            "skills": [
+                "Kotlin",
+                "Java",
+                "Spring Boot",
+                "MySQL",
+                "PostgreSQL",
+                "AWS"
+            ]
+        },
+        {
+            "id": 23,
+            "title": "서버 개발 담당자",
+            "location": "Seoul",
+            "status": "채용 중",
+            "createdAt": "2026-01-21T03:54:57.145811Z",
+            "company": {
+                "id": 23,
+                "name": "하입앤컴퍼니"
+            },
+            "skills": [
+                "Java",
+                "Spring Boot",
+                "AWS"
+            ]
+        },
+        {
+            "id": 25,
+            "title": "[아이디어스] 백엔드 개발자 (Java/PHP)",
+            "location": "Seoul",
+            "status": "채용 중",
+            "createdAt": "2026-01-21T03:54:57.145811Z",
+            "company": {
+                "id": 25,
+                "name": "백패커"
+            },
+            "skills": [
+                "Java",
+                "Spring Boot",
+                "AWS"
+            ]
+        },
+        {
+            "id": 26,
+            "title": "커머스 백엔드 개발 (5년 이상)",
+            "location": "Seoul",
+            "status": "채용 중",
+            "createdAt": "2026-01-21T03:54:57.145811Z",
+            "company": {
+                "id": 26,
+                "name": "피비지"
+            },
+            "skills": [
+                "Java",
+                "Spring Boot",
+                "Node.js",
+                "Python",
+                "FastAPI",
+                "Django",
+                "MySQL",
+                "PostgreSQL",
+                "AWS"
+            ]
+        }
+      // 생략 ...
+    ]
+}
+```
+
+##### OpenSearch
+```json
+{
+    "items": [
+        {
+            "id": 25,
+            "title": "[아이디어스] 백엔드 개발자 (Java/PHP)",
+            "location": "Seoul",
+            "status": "채용 중",
+            "createdAt": "2026-01-21T03:54:57.145811Z",
+            "company": {
+                "id": 25,
+                "name": "백패커"
+            },
+            "skills": [
+                "Java",
+                "Spring Boot",
+                "AWS"
+            ]
+        },
+        {
+            "id": 37,
+            "title": "[Tech] Java Backend Developer - 정산시스템 운영/개발",
+            "location": "Seoul",
+            "status": "채용 중",
+            "createdAt": "2026-01-21T03:54:57.145811Z",
+            "company": {
+                "id": 37,
+                "name": "위대한상상"
+            },
+            "skills": [
+                "Java",
+                "Spring Boot",
+                "MySQL",
+                "MongoDB",
+                "Kafka",
+                "AWS"
+            ]
+        },
+        {
+            "id": 23,
+            "title": "서버 개발 담당자",
+            "location": "Seoul",
+            "status": "채용 중",
+            "createdAt": "2026-01-21T03:54:57.145811Z",
+            "company": {
+                "id": 23,
+                "name": "하입앤컴퍼니"
+            },
+            "skills": [
+                "Java",
+                "Spring Boot",
+                "AWS"
+            ]
+        },
+        {
+            "id": 29,
+            "title": "웹 서비스 개발자",
+            "location": "Gwacheon",
+            "status": "채용 중",
+            "createdAt": "2026-01-21T03:54:57.145811Z",
+            "company": {
+                "id": 29,
+                "name": "원스토어"
+            },
+            "skills": [
+                "Kotlin",
+                "Java",
+                "Javascript",
+                "React"
+            ]
+        },
+        {
+            "id": 26,
+            "title": "커머스 백엔드 개발 (5년 이상)",
+            "location": "Seoul",
+            "status": "채용 중",
+            "createdAt": "2026-01-21T03:54:57.145811Z",
+            "company": {
+                "id": 26,
+                "name": "피비지"
+            },
+            "skills": [
+                "Java",
+                "Spring Boot",
+                "Node.js",
+                "Python",
+                "FastAPI",
+                "Django",
+                "MySQL",
+                "PostgreSQL",
+                "AWS"
+            ]
+        }
+      // 생략 ...
+    ]
+}
+```
+
+- OpenSearch의 경우 키워드 검색 시 필드 가중치에 따라 관련도 검색
+- RDB 목록 조회의 경우 키워드가 포함되어 있는 문서 전체 조회
+- 데이터 규모가 커지거나 키워드 복잡도가 증가하면 할수록 OpenSearch 검색 품질 높아짐
